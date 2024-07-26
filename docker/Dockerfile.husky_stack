@@ -1,0 +1,77 @@
+# Use the official ROS Noetic desktop full base image
+FROM osrf/ros:noetic-desktop-full
+
+# Set up environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME="/home/nuc"
+ENV ROS_DISTRO=noetic
+ENV ROS_WS=${HOME}/husky_ws
+
+# Add user nuc and install sudo
+RUN groupadd --gid 1000 nuc && useradd --uid 1000 --gid nuc --shell /bin/bash --create-home nuc \
+    && apt-get update && apt-get install -y sudo \
+    && echo "nuc ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    python3-pip \
+    python3-scipy \
+    python3-catkin-tools \
+    python-is-python3 \
+    python3-cheetah \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clean up duplicate entries in sources.list.d
+RUN rm /etc/apt/sources.list.d/ros1-latest.list
+
+# Create workspace directory
+RUN mkdir -p ${ROS_WS}/src
+
+# Copy the dependencies packages into the workspace
+COPY ../src/husky_deps ${ROS_WS}/src/husky_deps
+
+# Copy entrypoint scripts
+COPY docker/husky_stack_entrypoint.sh ${HOME}/husky_stack_entrypoint.sh
+
+# Set ownership to nuc user
+RUN chown -R nuc:nuc ${HOME}
+
+# Set the working directory
+WORKDIR ${ROS_WS}
+
+# Refresh the package list and install ros-noetic-lms1xx
+RUN apt-get update && apt-get install -y ros-noetic-lms1xx || (sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key F42ED6FBAB17C654 && sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && apt-get update && apt-get install -y ros-noetic-lms1xx)
+
+# Switch to nuc user
+USER nuc
+
+# Initialize rosdep if not already initialized
+RUN if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then sudo rosdep init; fi && \
+    for i in 1 2 3 4 5; do rosdep update && break || sleep 15; done
+
+# Install dependencies for the deps packages
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    rosdep install --from-paths src/husky_deps --ignore-src -r -y --verbose"
+
+# Source ROS environment, configure catkin workspace, build the deps packages
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    cd ${ROS_WS} && \
+    /ros_entrypoint.sh catkin config --init --install --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 && \
+    /ros_entrypoint.sh catkin build microstrain_mips --no-deps && \
+    /ros_entrypoint.sh catkin build cpr_multimaster_tools --no-deps"
+
+# Copy Husky packages into workspace after building dependencies
+COPY ../src/husky ${ROS_WS}/src/husky
+
+# Install dependencies for Husky packages
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && rosdep install --from-paths src --ignore-src -r -y --verbose"
+
+# Build the entire workspace
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && cd ${ROS_WS} && /ros_entrypoint.sh catkin build -sc --no-status --force-color"
+
+# Source the workspace setup
+RUN echo "source ${ROS_WS}/devel/setup.bash" >> ~/.bashrc
+
+# Entrypoint
+ENTRYPOINT ["/ros_entrypoint.sh", "/home/nuc/husky_stack_entrypoint.sh"]
