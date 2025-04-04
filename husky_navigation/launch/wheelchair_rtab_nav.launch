@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg default="true" name="open_rviz" />
+  <arg default="/husky_velocity_controller/cmd_vel" name="cmd_vel_topic" />
+  <arg default="/husky_velocity_controller/odom" name="odom_topic" />
+  <arg default="$(find husky_navigation)/maps/map.yaml" name="map_file" />
+
+<node name="locomotor" output="screen" pkg="locomove_base" respawn="false" type="move_base">
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_costmap_common_params.yaml" ns="global_costmap" />
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_costmap_common_params.yaml" ns="local_costmap" />
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_local_costmap_params.yaml" />
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_global_costmap_params.yaml" />
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_move_base_params.yaml" />
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_dwb_local_planner_params_kangaroo.yaml" />
+    <rosparam command="load" file="$(find husky_navigation)/config/rtab_global_planner_params_dlux.yaml" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
+    <remap from="odom" to="$(arg odom_topic)" />
+  </node>
+
+
+  <group if="$(arg open_rviz)">
+    <node args="-d $(find husky_navigation)/rviz/husky_navigation.rviz" name="rviz" pkg="rviz" required="true" type="rviz" />
+  </group>
+
+</launch>
+  

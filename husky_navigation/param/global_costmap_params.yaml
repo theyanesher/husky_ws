@@ -1,0 +1,30 @@
+global_costmap:
+  # Frame
+  global_frame: "map"
+  robot_base_frame: "base_link"
+
+  # Update Frequency
+  update_frequency: 10.0
+  publish_frequency: 10.0
+
+  # Map Type
+  static:
+    enabled:              true
+    map_topic: /map
+    track_unknown_space:  true
+    lethal_cost_threshold: 70
+    unknown_cost_value:    -1
+    trinary_costmap:       false
+    use_maximum:           true
+
+  rolling_window: false
+
+  inflation_layer:
+    enabled:              true
+    cost_scaling_factor:  10.0 # exp(-1.0 * cost_scaling_factor * (distance_from_obstacle – inscribed_radius)) * (costmap_2d::INSCRIBED_INFLATED_OBSTACLE - 1) 
+    inflation_radius:     0.25 # max. distance from an obstacle at which costs are incurred for planning paths.
+
+  plugins:
+     - {name: static_layer, type: "costmap_2d::StaticLayer"}
+     - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
+     - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
