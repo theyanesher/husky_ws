@@ -1,58 +1,53 @@
-# Husky Workspace
+# Usage Instructions
 
-### Barebones Robot Setup
+## Get started
 
-1. Clone the repo and build
+**GHCR Authentication** 
+  ```bash
+  echo "<YOUR_GITHUB_PAT>" | docker login ghcr.io -u <YOUR_GITHUB_USERID> --password-stdin
+  ```
+##### Prerequisites
+- VSCode
+- Remote Development Extension by Microsoft (Inside VSCode)
+  
+##### Setup Process
+- Create a folder for Husky development
+    ```bash 
+    mkdir husky_ws && cd husky_ws
+    # Clone the repo 
+    git clone https://github.com/RoboticsIIITH/husky_ws.git .
+    # Open VSCode 
+    code .
     ```
-    git clone https://github.com/RoboticsIIITH/husky_ws.git
-    cd husky_ws
-    catkin build
-    ```
+- To enter the container
+    - Open Command Pallete with `Ctrl+Shift+P`
+    - Select **Dev Containers: Reopen in Container**
 
-2. (Optional) For Joystick control
-   
-   Add yourself to `tty` group and set permission for USB device access. 
-   
-   Note: Do this when you are connected to Husky, husky will read host at /dev/ttyUSB0. 
+    - Use `Build WS` button to build workspace
+  
+  
+
+## Start up the ROS
+
+1. Launch
    ```
-   sudo usermod -a -G tty <username>
-   sudo chmod a+x /dev/ttyUSB0
+   sudo chmod +777 /dev/ttyUSB0
+   roslaunch husky_base base.launch 
    ```
+   - Optionally, you can plug a joystick and teleop the robot.
 
-3. Launch
+## Docker
+
+- To permanently add any ROS APT packages, list them in the rosPkgs.list file, then rebuild the Docker image using:
    ```
-   roslaunch husky_base base.launch port:=/dev/ttyUSB0
+   docker build -t ghcr.io/rtarun1/husky_base -f .devcontainer/Dockerfile .devcontainer
    ```
-
-### Docker Setup
-
-#### Docker Installation:
-
-   To set up Docker on your system, follow the instructions in this [Docker Setup tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04).
-
-   Also do the post installation steps, so that you don't have to use "sudo" everytime.
+- Always run ```sudo apt update``` inside the container before installing any additional packages.
+  
+- For Docker-related questions or issues, feel free to open an issue on the [DockerForROS2Development](https://github.com/soham2560/DockerForROS2Development.git)
 
 
-##### Creating docker image
+### Credits
 
-   Create your base docker image for husky stack by following these commands:
-
-   ```
-   cd <path/to/husky_ws/>
-   ```
-   When your present directory is husky_ws, run this command to build your Docker Image from the Dockerfile provided.
-
-   The syntax is as follows:
-   
-   _docker build -f <path/to/Dockerfile> -t <tag/name for the image>_.
-
-   ```
-   docker build -f docker/Dockerfile.husky_stack -t iiit_h/husky_stack:v0.0.1 .
-   ```
-
-
-
-
-
-
-
+- This Docker setup was adapted from [Soham's repository](https://github.com/soham2560/DockerForROS2Development.git).
+- If you use this repository for your project or publication, please consider citing or acknowledging [Tarun](https://github.com/rtarun1), [Soham](https://github.com/soham2560), [Official Husky](https://github.com/husky/husky).

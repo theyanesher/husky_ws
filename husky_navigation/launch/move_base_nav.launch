@@ -1,0 +1,33 @@
+<launch>
+  <!-- Arguments -->
+  <!-- <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/> -->
+  <arg default="$(find husky_navigation)/maps/thub_full.yaml" name="map_file" />
+  <node args="$(arg map_file)" name="map_server" pkg="map_server" type="map_server" />
+  <arg name="cmd_vel_topic" default="/husky_velocity_controller/cmd_vel" />
+  <arg name="odom_topic" default="/husky_velocity_controller/odom" />
+  <arg name="move_forward_only" default="false"/>
+  <arg default="true" name="open_rviz" />
+  <!-- <arg default="$(find husky_navigation)/maps/map.yaml" name="map_file" /> -->
+  
+  
+  <include file="$(find husky_navigation)/launch/amcl_working.launch" />
+  
+  <!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find husky_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find husky_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find husky_navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find husky_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find husky_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find husky_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+  </node>
+
+  <group if="$(arg open_rviz)">
+    <node args="-d $(find husky_navigation)/rviz/nav.rviz" name="rviz" pkg="rviz" required="true" type="rviz" />
+  </group>
+
+</launch>

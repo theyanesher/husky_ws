@@ -1,0 +1,98 @@
+DWBLocalPlanner:
+#   critics: [RotateToGoal, Oscillation, ObstacleFootprint, GoalAlign, PathAlign, PathDist, GoalDist]
+  critics: [Oscillation, ObstacleFootprint, PathDist, GoalDist, RotateToGoal, PathAlign, GoalAlign]
+  debug_trajectory_details: true
+  short_circuit_trajectory_evaluation: true
+
+  trajectory_generator_name: dwb_plugins::StandardTrajectoryGenerator #29/12(trajectory generator changed to get variable velocities during navigation) 
+#  trajectory_generator_name: dwb_plugins::LimitedAccelGenerator
+  goal_checker_name: dwb_plugins::StoppedGoalChecker
+  # Goal Tolerence
+  # xy_goal_tolerance: 0.5
+  # yaw_goal_tolerance: 1.57 # 30 degree = 0.524 rad
+  xy_goal_tolerance: 0.5
+  yaw_goal_tolerance: 0.262
+
+  # Acceleration Limits
+  acc_lim_x: 0.1 #0.5 (29/11 acceleration caluse remapped according to controller manager)
+  acc_lim_y: 0.0
+  acc_lim_trans: 0.1 #0.5 (29/11 acceleration caluse remapped according to controller manager) 
+  acc_lim_theta: 1.4285 #2.3809 (29/11 acceleration caluse remapped according to controller manager) 
+  decel_lim_theta: -1.4285  #-2.3809 (29/11 acceleration caluse remapped according to controller manager) 
+  decel_lim_x: -0.1  #-1.8 (29/11 acceleration caluse remapped according to controller manager) 
+
+  # Velocity Limits
+  max_vel_theta: 0.3 #4.76 #0.5
+  ## min_vel_theta: 0.0
+  ## max_speed_theta: 0.2
+  min_speed_theta: 0.0
+  max_speed_xy: 0.3
+  min_speed_xy: 0.05
+  max_vel_x: 0.3
+  min_vel_x: 0.0 #-0.1 (29/11 backdriven enabled) 
+  max_vel_y: 0.0
+  min_vel_y: 0.0
+
+  # Path Simulation
+  sim_time: 3.0 # 2.0
+  # sim_period: 0.1
+  #If discretize_by_time is false, then sim_granularity is the maximum amount of distance between
+  # *  two successive points on the trajectory, and angular_sim_granularity is the maximum amount of
+  # *  angular distance between two successive points.
+  discretize_by_time: true
+  time_granularity: 0.1
+
+  # unnecessary parameters - not used in our setup 
+  # TODO : Clean all parameter files
+  # sim_granularity : 0.05
+  # linear_granularity: 0.25
+  # angular_sim_granularity: 0.25
+  # angular_granularity: 12
+  vx_samples: 25
+  vy_samples: 1
+  vtheta_samples: 40 # 20
+
+  prune_plan: true
+  aggregation_type: sum
+
+# BaseObstacle - Scores a trajectory based on where the path passes over the costmap. To use this properly, you must use the inflation layer in costmap to expand obstacles by the robot's radius.
+# ObstacleFootprint - Scores a trajectory based on verifying all points along the robot's footprint don't touch an obstacle marked in the costmap.
+# GoalAlign - Scores a trajectory based on how well aligned the trajectory is with the goal pose.
+# GoalDist - Scores a trajectory based on how close the trajectory gets the robot to the goal pose.
+# PathAlign - Scores a trajectory based on how well it is aligned to the path provided by the global planner.
+# PathDist - Scores a trajectory based on how far it ends up from the path provided by the global planner.
+# PreferForward - Scores trajectories that move the robot forwards more highly
+# RotateToGoal - Only allows the robot to rotate to the goal orientation when it is sufficiently close to the goal location
+# Oscillation - Prevents the robot from just moving backwards and forwards.
+# Twirling - Prevents holonomic robots from spinning as they make their way to the goal.
+
+  GoalDist:
+    scale: 48.0 #48.0
+  PathDist:
+    scale: 28.0 #72.0 # reduce this
+  ObstacleFootprint:
+    scale: 100.0
+  Oscillation:
+    scale: 50.0
+  RotateToGoal:
+    scale: 100.0
+  PathAlign:
+    scale: 45.0
+    forward_point_distance: 0.4 # 0.325
+  GoalAlign:
+    scale: 60.0 #50.0
+    forward_point_distance: 0.4 # 0.325
+
+  max_scaling_factor: 2.0
+  scaling_speed: 1.0
+
+#  forward_point_distance: 0.5
+  slowing_factor: 30.0
+  trans_stopped_velocity: 0.05
+  oscillation_reset_dist: 0.25
+  oscillation_reset_angle: 0.40
+  oscillation_reset_time: -1.0
+
+  publish_evaluation: true
+  publish_trajectories: true
+  publish_cost_grid_pc: true

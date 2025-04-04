@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+<!-- Base Launch -->
+<include file="$(find husky_base)/launch/base.launch" />
+
+<!-- Robot state publisher -->
+<!-- <include file="$(find husky_description)/launch/description.launch"/> -->
+
+<!-- Realsense Camera launch-->
+<!-- <include file="$(find realsense2_camera)/launch/rs_camera.launch"/> -->
+
+<!-- LiDAR launch -->
+<include file="$(find rplidar_ros)/launch/rplidar_s2.launch" />
+
+
+<!-- Kangaroo driver launch for /odom and control -->
+<!-- <include file="$(find kangaroo_driver)/launch/kangaroo_driver.launch"/>  -->
+
+<!-- LiDAR filter-->
+<!-- <include file="$(find wheelchair_nav_cameras)/laser_filter launch/angle_range_filter.launch" /> -->
+
+<!-- Joystick control -->
+<!-- <include file="$(find teleop_twist_joy)/launch/teleop.launch"/> -->
+
+ <!-- rosbag record buffsize=0 /tf /tf_static /scan_filtered /odom /wheelchair_diff/cmd_vel /imu  
+/scan_raw /camera/color/image_raw /camera/aligned_depth_to_color/image_raw /camera/color/camera_info 
+/camera/color/metadata /camera/depth/camera_info /camera/aligned_depth_to_color/camera_info  -->
+
+<!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find realsense2_camera)/rviz/pointcloud.rviz" required="true" /> -->
+</launch>

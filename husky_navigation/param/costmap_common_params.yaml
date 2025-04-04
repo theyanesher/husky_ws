@@ -1,0 +1,21 @@
+# map_type: costmap
+
+robot_base_frame: "base_link"
+
+transform_tolerance: 1.0
+
+obstacle_layer:
+ observation_sources: scan_front
+ scan_front:
+   data_type: LaserScan 
+   topic: scan
+   marking: true 
+   clearing: true 
+   min_obstacle_height: -2.0 
+   max_obstacle_height: 2.0 
+   obstacle_range: 5.0
+   raytrace_range: 3.8
+
+
+footprint: [[-0.5, -0.33], [-0.5, 0.33], [0.5, 0.33], [0.5, -0.33]]
+
