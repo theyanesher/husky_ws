@@ -1,11 +1,10 @@
 {
     "name": "Husky Development on AMD64/x86",
-    "image": "ghcr.io/rtarun1/husky_base:latest",
+    "image": "ghcr.io/rtarun1/husky_base:v1.0",
     "privileged": true,
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/user/catkin_ws/src,type=bind",
-    "workspaceFolder": "/home/user/catkin_ws/src",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/container_user/catkin_ws/src,type=bind",
+    "workspaceFolder": "/home/container_user/catkin_ws/src",
     "customizations": {
-        
         "vscode": {
             "settings": {
                 "actionButtons": {
@@ -15,10 +14,10 @@
                     "commands": [
                         {
                             "name": "Build WS",
-                            "cwd": "/home/user/catkin_ws",
+                            "cwd": "/home/container_user/catkin_ws",
                             "color": "green",
                             "singleInstance": true,
-                            "command": "source /opt/ros/noetic/setup.bash && catkin_make && source devel/setup.bash"
+                            "command": "catkin_make && source devel/setup.bash"
                         }
                     ]
                 }
@@ -63,5 +62,5 @@
         "--net=host",
         "--ipc=host"
     ],
-    "postStartCommand": "sudo chown -R user:user /home/user/catkin_ws /run"
+    "postStartCommand": "sudo chown -R container_user:container_user /home/container_user/catkin_ws /run"
 }

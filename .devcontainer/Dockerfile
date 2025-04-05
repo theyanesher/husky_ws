@@ -1,4 +1,4 @@
-FROM ghcr.io/rtarun1/noetic:latest
+FROM ghcr.io/rtarun1/noetic:v1.0
 
 # Add the following labels
 LABEL org.opencontainers.image.description="Husky"
@@ -33,9 +33,9 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # Build and install Realsense-SDK
-WORKDIR /home/user
+WORKDIR /home/container_user
 RUN git clone --branch v2.56.2 https://github.com/IntelRealSense/librealsense.git
-WORKDIR /home/user/librealsense
+WORKDIR /home/container_user/librealsense
 RUN sudo mkdir -p /etc/udev/rules.d && \
     ./scripts/setup_udev_rules.sh \
     ./scripts/patch-realsense-ubuntu-lts-hwe.sh 
