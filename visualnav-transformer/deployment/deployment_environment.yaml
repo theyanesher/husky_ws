@@ -13,6 +13,8 @@ dependencies:
 - opencv
 - prettytable
 - wandb
+- einops
+- vit-pytorch
 - pip:
   - torch
   - torchvision

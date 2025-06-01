@@ -32,6 +32,13 @@ RUN sudo apt-get update \
     && sudo apt-get clean -y \
     && sudo rm -rf /var/lib/apt/lists/*
 
+# Install Miniconda
+RUN apt-get update && apt-get install -y wget
+RUN mkdir -p ~/miniconda3 \
+    && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh \
+    && bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 \
+    && rm ~/miniconda3/miniconda.sh
+
 # Build and install Realsense-SDK
 WORKDIR /home/container_user
 RUN git clone --branch v2.56.2 https://github.com/IntelRealSense/librealsense.git
