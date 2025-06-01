@@ -50,6 +50,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <!--Teleop -->
   <include file="$(find husky_control)/launch/teleop.launch" />
 
+  <!-- Realsense -->
+  <include file="$(find husky_bringup)/launch/realsense_config/realsense.launch" />
+
   <!-- Diagnostic Aggregator -->
   <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator">
     <rosparam command="load" file="$(find husky_base)/config/diagnostics.yaml"/>

@@ -9,3 +9,4 @@ ros-noetic-twist-mux
 ros-noetic-interactive-marker-twist-server
 ros-noetic-teleop-twist-joy
 ros-noetic-husky-simulator
+tmux
