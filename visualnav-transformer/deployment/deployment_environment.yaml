@@ -10,9 +10,13 @@ dependencies:
 - matplotlib
 - pyyaml
 - rospkg
+- opencv
+- prettytable
+- wandb
 - pip:
   - torch
   - torchvision
   - efficientnet_pytorch
   - warmup_scheduler
   - diffusers==0.11.1
+  - huggingface_hub==0.25.2

@@ -5,11 +5,13 @@ train/wandb/*
 train/gnm_dataset/*
 *_test.yaml
 
+
 *.png
 *.jpg
 *.pth
 *.mp4
 *.gif
+*.bag
 
 deployment/model_weights/*
 deployment/topomaps/*
