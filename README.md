@@ -52,6 +52,8 @@
    sudo chmod +777 /dev/ttyUSB0
    roslaunch husky_base base.launch 
    ```
+   - Use ```sudo apt remove brltty``` if /dev/tty/USB0 port is not visible after connecting to Husky.
+
    - Optionally, you can plug a joystick and teleop the robot.
 
 ## Docker
