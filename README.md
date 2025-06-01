@@ -43,11 +43,20 @@
 
     - Use `Build WS` button to build workspace
   
+- Conda Installation
   
+  ```bash
+    mkdir -p ~/miniconda3
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    rm ~/miniconda3/miniconda.sh
+    source ~/miniconda3/bin/activate
+    conda init --all
+  ```
 
 ## Start up the ROS
 
-1. Launch
+1. Hardware 
    ```
    sudo chmod +777 /dev/ttyUSB0
    roslaunch husky_base base.launch 
@@ -55,6 +64,55 @@
    - Use ```sudo apt remove brltty``` if /dev/tty/USB0 port is not visible after connecting to Husky.
 
    - Optionally, you can plug a joystick and teleop the robot.
+  
+   - Have included the realsense.launch in the base
+
+
+2. Simulation
+   ```
+   roslaunch husky_gazebo husky_playpen.launch
+   ```
+   
+   - Might take some time to initialise the world for the first time
+     
+    
+## Nomad
+    
+### Setup
+  - Conda env creation from yaml
+    
+    ```bash
+      conda env create -f deployment/deployment_environment.yaml
+      conda activate nomad
+      pip install -e train/
+      pip install -e diffusion_policy/
+    ```
+
+### Topology Map
+
+  - Record rosbag : ```rosbag record /realsense/color/image_raw /cmd_vel -o <bag_name>```
+    
+  - Topomap Creation
+    
+    Play the bag file : ```rosbag play -r 1.5 <bag_name>```
+    
+    ```bash
+    python create_topomap.py --dt 1 --dir <topomap_dir>
+    ```
+    
+    `<topomap_dir>` : name of the folder to be saved in directory topomaps/images/
+
+### Navigation
+
+  - Controller Node
+    ```bash
+    python pd_controller.py
+    ```
+
+  - Inference Script
+    ```bash
+    python navigate.py --model nomad --dir <topomap_dir>
+    ```
 
 ## Docker
 
