@@ -57,7 +57,7 @@
 teleop_twist_joy:
   axis_linear: 1 # BOOL: TRUE Sets
   scale_linear: 0.3 # Linear Movement
-  scale_linear_turbo: 0.6 # Max Linear
+  scale_linear_turbo: 0.4 # Max Linear
   axis_angular: 0 # BOOL: FALSE Sets
   scale_angular: 0.3 # Ang Movement
   # enable_button: 4 # Useless

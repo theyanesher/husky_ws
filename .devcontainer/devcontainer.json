@@ -50,7 +50,7 @@
         "LIBGL_ALWAYS_SOFTWARE": "1"
     },
     "runArgs": [
-        // "--gpus=all",
+        "--gpus=all",
         "--cap-add=SYS_NICE",
         "--ulimit=rtprio=99",
         "--ulimit=rttime=-1",
